@@ -17,11 +17,16 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Migrate database
 try
 {
-    app.Services
-        .GetRequiredService<DataContext>()
-        .Database.Migrate();
+    var scope = app.Services.CreateScope();
+    var ctx = scope.ServiceProvider.GetRequiredService<DataContext>();
+    await ctx.Database.MigrateAsync();
+    //ctx.Database.EnsureDeleted();
+    //ctx.Database.EnsureCreated();
+
+    await Seed.SeedData(ctx);
 }
 catch (Exception ex)
 {
@@ -42,4 +47,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
