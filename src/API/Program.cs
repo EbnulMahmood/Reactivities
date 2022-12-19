@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Presistence;
 
+const string corsPolicyName = "CorsPolicy";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -8,6 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy(corsPolicyName, policy =>
+        policy.AllowAnyMethod()
+        .AllowAnyHeader()
+        .WithOrigins("http://localhost:3000"));
 });
 
 builder.Services.AddControllers();
@@ -42,6 +52,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(corsPolicyName);
 
 app.UseAuthorization();
 
