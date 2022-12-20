@@ -7,7 +7,7 @@ namespace Application.Activities
 {
     public sealed class List
     {
-        public sealed record Query: IRequest<IEnumerable<Activity>> { }
+        public sealed record Query: IRequest<IEnumerable<Activity>>;
         public sealed class Handler : IRequestHandler<Query, IEnumerable<Activity>>
         {
             private readonly DataContext _context;
