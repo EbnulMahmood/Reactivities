@@ -6,6 +6,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import axios from 'axios';
 import { Activity } from '../models/activity';
+import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 
 export default function Main() {
 
@@ -20,21 +21,7 @@ export default function Main() {
     return (
         <Box component="main" sx={{ p: 3 }}>
             <Toolbar />
-            <List
-                sx={{
-                    width: '100%',
-                    bgcolor: 'background.paper',
-                    position: 'relative',
-                    overflow: 'auto',
-                    '& ul': { padding: 0 },
-                }}
-            >
-                {activities.map(activity => (
-                    <ListItem key={activity.id}>
-                        <ListItemText primary={activity.title} />
-                    </ListItem>
-                ))}
-            </List>
+            <ActivityDashboard activities={activities} />
         </Box>
     );
 }
