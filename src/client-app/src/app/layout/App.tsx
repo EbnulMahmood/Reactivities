@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './App.css';
 import axios from 'axios';
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
@@ -15,6 +14,7 @@ import Divider from '@mui/material/Divider';
 import ListItemButton from '@mui/material/ListItemButton';
 import CssBaseline from '@mui/material/CssBaseline';
 import Drawer from '@mui/material/Drawer';
+import { Activity } from '../models/activity';
 
 interface Props {
   /**
@@ -25,10 +25,10 @@ interface Props {
 }
 
 function App(props: Props) {
-  const [activities, setActivities] = useState([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5032/api/activity').then(response => {
+    axios.get<Activity[]>('http://localhost:5032/api/activity').then(response => {
       setActivities(response.data);
     })
   }, []);
@@ -121,7 +121,7 @@ function App(props: Props) {
             '& ul': { padding: 0 },
           }}
         >
-          {activities.map((activity: any) => (
+          {activities.map(activity => (
             <ListItem key={activity.id}>
               <ListItemText primary={activity.title} />
             </ListItem>
