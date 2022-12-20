@@ -1,3 +1,5 @@
+using Application.Activities;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Presistence;
 
@@ -19,6 +21,8 @@ builder.Services.AddCors(opt =>
         .AllowAnyHeader()
         .WithOrigins("http://localhost:3000"));
 });
+
+builder.Services.AddMediatR(typeof(List.Handler).Assembly);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

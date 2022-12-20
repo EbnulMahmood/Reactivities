@@ -33,7 +33,6 @@ function App(props: Props) {
     })
   }, []);
 
-
   const drawerWidth = 240;
   const navItems = ['Home', 'About', 'Contact'];
 
