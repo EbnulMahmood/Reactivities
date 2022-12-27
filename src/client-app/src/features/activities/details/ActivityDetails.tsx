@@ -12,12 +12,14 @@ import CardActions from "@mui/material/CardActions";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
+import CancelIcon from '@mui/icons-material/Cancel';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Collapse from "@mui/material/Collapse";
 import { Activity } from "../../../app/models/activity";
 
 interface Props {
     activity: Activity;
+    cancelSelectActivity: () => void;
 }
 
 interface ExpandMoreProps extends IconButtonProps {
@@ -35,7 +37,7 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
     }),
 }));
 
-export default function ActivityDetails({ activity }: Props) {
+export default function ActivityDetails({ activity, cancelSelectActivity }: Props) {
     const [expanded, setExpanded] = React.useState(false);
 
     const handleExpandClick = () => {
@@ -72,6 +74,12 @@ export default function ActivityDetails({ activity }: Props) {
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
+                <IconButton
+                    aria-label="cancel"
+                    onClick={cancelSelectActivity}
+                >
+                    <CancelIcon />
+                </IconButton>
                 <IconButton aria-label="add to favorites">
                     <FavoriteIcon />
                 </IconButton>

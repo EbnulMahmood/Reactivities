@@ -10,9 +10,10 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 interface Props {
     activities: Activity[];
+    selectActivity: (id: string) => void;
 }
 
-export default function ActivityList({ activities }: Props) {
+export default function ActivityList({ activities, selectActivity }: Props) {
     return (
         <List
             sx={{
@@ -27,7 +28,12 @@ export default function ActivityList({ activities }: Props) {
                 <>
                     <ListItem key={activity.id} alignItems="flex-start"
                         secondaryAction={
-                            <IconButton edge="end" size="small" aria-label="view">
+                            <IconButton
+                                edge="end"
+                                size="small"
+                                aria-label="view"
+                                onClick={() => selectActivity(activity.id)}
+                            >
                                 <RemoveRedEyeIcon />
                             </IconButton>
                         }>

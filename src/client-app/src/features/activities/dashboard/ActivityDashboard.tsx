@@ -9,6 +9,9 @@ import ActivityForm from "../form/ActivityForm";
 
 interface Props {
     activities: Activity[];
+    selectedActivity: Activity | undefined;
+    selectActivity: (id: string) => void;
+    cancelSelectActivity: () => void;
 }
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -19,18 +22,22 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function ActivityDashboard({ activities }: Props) {
+export default function ActivityDashboard({ activities, selectedActivity, selectActivity, cancelSelectActivity }: Props) {
     return (
         <Grid container spacing={2}>
             <Grid item={true} xs={12} sm={6} md={8}>
                 <Item>
-                    <ActivityList activities={activities} />
+                    <ActivityList
+                        activities={activities}
+                        selectActivity={selectActivity} />
                 </Item>
             </Grid>
             <Grid item={true} xs={12} sm={6} md={4}>
                 <Item>
-                    {/* {activities[0] &&
-                        <ActivityDetails activity={activities[1]} />} */}
+                    {selectedActivity &&
+                        <ActivityDetails
+                            activity={selectedActivity}
+                            cancelSelectActivity={cancelSelectActivity} />}
                     <ActivityForm />
                 </Item>
             </Grid>
