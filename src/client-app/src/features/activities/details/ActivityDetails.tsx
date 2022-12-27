@@ -90,7 +90,7 @@ export default function ActivityDetails({ activity }: Props) {
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
                     <Typography variant="caption" paragraph>Description:</Typography>
-                    <Typography variant="body2" paragraph>
+                    <Typography component="span" variant="body2" paragraph>
                         {activity.description}
                     </Typography>
                 </CardContent>

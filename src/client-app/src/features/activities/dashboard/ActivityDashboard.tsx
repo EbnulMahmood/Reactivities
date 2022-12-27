@@ -5,6 +5,7 @@ import { styled } from "@mui/material/styles";
 import { Activity } from "../../../app/models/activity";
 import ActivityList from "./ActivityList";
 import ActivityDetails from "../details/ActivityDetails";
+import ActivityForm from "../form/ActivityForm";
 
 interface Props {
     activities: Activity[];
@@ -28,8 +29,9 @@ export default function ActivityDashboard({ activities }: Props) {
             </Grid>
             <Grid item={true} xs={12} sm={6} md={4}>
                 <Item>
-                    {activities[0] &&
-                        <ActivityDetails activity={activities[1]} />}
+                    {/* {activities[0] &&
+                        <ActivityDetails activity={activities[1]} />} */}
+                    <ActivityForm />
                 </Item>
             </Grid>
         </Grid>
