@@ -27,60 +27,59 @@ export default function ActivityList({ activities, selectActivity, deleteActivit
             }}
         >
             {activities.map(activity => (
-                <>
-                    <ListItem key={activity.id} alignItems="flex-start"
-                        secondaryAction={
+                <ListItem
+                    divider={true}
+                    key={activity.id}
+                    alignItems="flex-start"
+                    secondaryAction={
+                        <>
+                            <IconButton
+                                onClick={() => selectActivity(activity.id)}
+                                edge="end"
+                                size="small"
+                                aria-label="view"
+                            >
+                                <RemoveRedEyeIcon />
+                            </IconButton>
+                            <IconButton
+                                onClick={() => deleteActivity(activity.id)}
+                                edge="end"
+                                size="small"
+                                aria-label="delete"
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                        </>
+                    }>
+                    <ListItemText
+                        primary={<Typography
+                            sx={{ display: 'inline' }}
+                            variant="h6"
+                            component="div">
+                            {activity.title}
+                        </Typography>}
+                        secondary={
                             <>
-                                <IconButton
-                                    onClick={() => selectActivity(activity.id)}
-                                    edge="end"
-                                    size="small"
-                                    aria-label="view"
+                                <Typography
+                                    sx={{ display: 'block' }}
+                                    component="span"
+                                    variant="body2"
+                                    color="text.primary">
+                                    {activity.date}
+                                </Typography>
+                                <Typography
+                                    sx={{ display: 'inline' }}
+                                    component="span"
+                                    variant="body2"
+                                    color="text.primary"
                                 >
-                                    <RemoveRedEyeIcon />
-                                </IconButton>
-                                <IconButton
-                                    onClick={() => deleteActivity(activity.id)}
-                                    edge="end"
-                                    size="small"
-                                    aria-label="delete"
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
+                                    Ali Connors
+                                </Typography>
+                                {" —"} {activity.description}
                             </>
-                        }>
-                        <ListItemText
-                            primary={<Typography
-                                sx={{ display: 'inline' }}
-                                variant="h6"
-                                component="div">
-                                {activity.title}
-                            </Typography>}
-                            secondary={
-                                <>
-                                    <Typography
-                                        sx={{ display: 'inline' }}
-                                        component="span"
-                                        variant="body2"
-                                        color="text.primary">
-                                        {activity.date}
-                                    </Typography>
-                                    <Divider></Divider>
-                                    <Typography
-                                        sx={{ display: 'inline' }}
-                                        component="span"
-                                        variant="body2"
-                                        color="text.primary"
-                                    >
-                                        Ali Connors
-                                    </Typography>
-                                    {" —"} {activity.description}
-                                </>
-                            }
-                        />
-                    </ListItem>
-                    <Divider variant="fullWidth" component="li" />
-                </>
+                        }
+                    />
+                </ListItem>
             ))}
         </List>
     );
