@@ -10,8 +10,8 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
+import EditIcon from '@mui/icons-material/Edit';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Collapse from "@mui/material/Collapse";
@@ -20,6 +20,7 @@ import { Activity } from "../../../app/models/activity";
 interface Props {
     activity: Activity;
     cancelSelectActivity: () => void;
+    openForm: (id: string) => void;
 }
 
 interface ExpandMoreProps extends IconButtonProps {
@@ -37,7 +38,7 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
     }),
 }));
 
-export default function ActivityDetails({ activity, cancelSelectActivity }: Props) {
+export default function ActivityDetails({ activity, cancelSelectActivity, openForm }: Props) {
     const [expanded, setExpanded] = React.useState(false);
 
     const handleExpandClick = () => {
@@ -80,8 +81,10 @@ export default function ActivityDetails({ activity, cancelSelectActivity }: Prop
                 >
                     <CancelIcon />
                 </IconButton>
-                <IconButton aria-label="add to favorites">
-                    <FavoriteIcon />
+                <IconButton
+                    onClick={() => openForm(activity.id)}
+                    aria-label="edit">
+                    <EditIcon />
                 </IconButton>
                 <IconButton aria-label="share">
                     <ShareIcon />

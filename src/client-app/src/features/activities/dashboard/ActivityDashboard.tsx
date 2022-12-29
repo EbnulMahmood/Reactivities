@@ -12,6 +12,11 @@ interface Props {
     selectedActivity: Activity | undefined;
     selectActivity: (id: string) => void;
     cancelSelectActivity: () => void;
+    editMode: boolean;
+    openForm: (id: string) => void;
+    closeForm: () => void;
+    createOrEditActivity: (activity: Activity) => void;
+    deleteActivity: (id: string) => void;
 }
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -22,23 +27,31 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function ActivityDashboard({ activities, selectedActivity, selectActivity, cancelSelectActivity }: Props) {
+export default function ActivityDashboard({ activities,
+    selectedActivity, selectActivity, cancelSelectActivity,
+    editMode, openForm, closeForm,
+    createOrEditActivity, deleteActivity }: Props) {
     return (
         <Grid container spacing={2}>
             <Grid item={true} xs={12} sm={6} md={8}>
                 <Item>
                     <ActivityList
                         activities={activities}
+                        deleteActivity={deleteActivity}
                         selectActivity={selectActivity} />
                 </Item>
             </Grid>
             <Grid item={true} xs={12} sm={6} md={4}>
                 <Item>
-                    {selectedActivity &&
+                    {selectedActivity && !editMode &&
                         <ActivityDetails
+                            openForm={openForm}
                             activity={selectedActivity}
                             cancelSelectActivity={cancelSelectActivity} />}
-                    <ActivityForm />
+                    {editMode && <ActivityForm
+                        createOrEdit={createOrEditActivity}
+                        closeForm={closeForm}
+                        activity={selectedActivity} />}
                 </Item>
             </Grid>
         </Grid>

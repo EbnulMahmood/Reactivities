@@ -1,37 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Toolbar from '@mui/material/Toolbar';
-import axios from 'axios';
 import { Activity } from '../models/activity';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 import Container from '@mui/material/Container';
 
-export default function Main() {
+interface Props {
+    activities: Activity[];
+    selectedActivity: Activity | undefined;
+    selectActivity: (id: string) => void;
+    cancelSelectActivity: () => void;
+    editMode: boolean;
+    openForm: (id: string) => void;
+    closeForm: () => void;
+    createOrEditActivity: (activity: Activity) => void;
+    deleteActivity: (id: string) => void;
+}
 
-    const [activities, setActivities] = useState<Activity[]>([]);
-    const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
-
-    useEffect(() => {
-        axios.get<Activity[]>('http://localhost:5032/api/activity').then(response => {
-            setActivities(response.data);
-        })
-    }, []);
-
-    const handleSelectActivity = (id: string) => {
-        setSelectedActivity(activities.find(x => x.id === id));
-    }
-
-    const handleCancelSelectActivity = () => {
-        setSelectedActivity(undefined);
-    }
-
+export default function Main({ activities, selectedActivity, selectActivity,
+    cancelSelectActivity, editMode, openForm,
+    closeForm, createOrEditActivity, deleteActivity }: Props) {
     return (
         <Container sx={{ p: 3 }}>
             <Toolbar />
             <ActivityDashboard
                 activities={activities}
-                selectActivity={handleSelectActivity}
                 selectedActivity={selectedActivity}
-                cancelSelectActivity={handleCancelSelectActivity} />
+                selectActivity={selectActivity}
+                editMode={editMode}
+                openForm={openForm}
+                closeForm={closeForm}
+                createOrEditActivity={createOrEditActivity}
+                deleteActivity={deleteActivity}
+                cancelSelectActivity={cancelSelectActivity} />
         </Container>
     );
 }

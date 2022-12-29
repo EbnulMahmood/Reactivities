@@ -7,13 +7,15 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface Props {
     activities: Activity[];
     selectActivity: (id: string) => void;
+    deleteActivity: (id: string) => void;
 }
 
-export default function ActivityList({ activities, selectActivity }: Props) {
+export default function ActivityList({ activities, selectActivity, deleteActivity }: Props) {
     return (
         <List
             sx={{
@@ -28,14 +30,24 @@ export default function ActivityList({ activities, selectActivity }: Props) {
                 <>
                     <ListItem key={activity.id} alignItems="flex-start"
                         secondaryAction={
-                            <IconButton
-                                edge="end"
-                                size="small"
-                                aria-label="view"
-                                onClick={() => selectActivity(activity.id)}
-                            >
-                                <RemoveRedEyeIcon />
-                            </IconButton>
+                            <>
+                                <IconButton
+                                    onClick={() => selectActivity(activity.id)}
+                                    edge="end"
+                                    size="small"
+                                    aria-label="view"
+                                >
+                                    <RemoveRedEyeIcon />
+                                </IconButton>
+                                <IconButton
+                                    onClick={() => deleteActivity(activity.id)}
+                                    edge="end"
+                                    size="small"
+                                    aria-label="delete"
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
+                            </>
                         }>
                         <ListItemText
                             primary={<Typography

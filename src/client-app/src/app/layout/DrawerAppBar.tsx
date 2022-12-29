@@ -1,19 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Main from './Main';
+import NavBar from './NavBar';
+import { v4 as uuid } from 'uuid';
+import { Activity } from '../models/activity';
+import axios from 'axios';
 
 interface Props {
     /**
@@ -24,9 +24,60 @@ interface Props {
 }
 
 const drawerWidth = 240;
-const navItems = ['Home', 'About', 'Contact'];
+
+export enum NavItems {
+    Home,
+    About,
+    Create
+};
 
 export default function DrawerAppBar(props: Props) {
+    const [activities, setActivities] = useState<Activity[]>([]);
+    const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
+    const [editMode, setEditMode] = useState(false);
+
+    useEffect(() => {
+        axios.get<Activity[]>('http://localhost:5032/api/activity').then(response => {
+            setActivities(response.data);
+        })
+    }, []);
+
+    const handleSelectActivity = (id: string) => {
+        setSelectedActivity(activities.find(x => x.id === id));
+    };
+
+    const handleCancelSelectActivity = () => {
+        setSelectedActivity(undefined);
+    };
+
+    const handleFormOpen = (id?: string) => {
+        id ? handleSelectActivity(id) : handleCancelSelectActivity();
+        setEditMode(true);
+    };
+
+    const handleFormClose = () => {
+        setEditMode(false);
+    };
+
+    const viewForm = (item: string) => {
+        const create = NavItems[NavItems.Create];
+        if (item === create) {
+            handleFormOpen();
+        }
+    };
+
+    const handleCreateOrEditActivity = (activity: Activity) => {
+        activity.id ? setActivities([...activities.filter(x => x.id !== activity.id), activity]) :
+            setActivities([...activities, { ...activity, id: uuid() }]);
+
+        setEditMode(false);
+        setSelectedActivity(activity);
+    }
+
+    const handleDeleteActivity = (id: string) => {
+        setActivities([...activities.filter(x => x.id !== id)])
+    }
+
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -40,15 +91,7 @@ export default function DrawerAppBar(props: Props) {
                 Reactivities
             </Typography>
             <Divider />
-            <List>
-                {navItems.map((item) => (
-                    <ListItem key={item} disablePadding>
-                        <ListItemButton sx={{ textAlign: 'center' }}>
-                            <ListItemText primary={item} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
+            <NavBar navItems={NavItems} viewForm={viewForm} />
         </Box>
     );
 
@@ -76,11 +119,16 @@ export default function DrawerAppBar(props: Props) {
                         Reactivities
                     </Typography>
                     <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                        {navItems.map((item) => (
-                            <Button key={item} sx={{ color: '#fff' }}>
-                                {item}
-                            </Button>
-                        ))}
+                        {Object.keys(NavItems)
+                            .filter((v) => isNaN(Number(v)))
+                            .map((item) => (
+                                <Button
+                                    onClick={() => viewForm(item)}
+                                    key={item}
+                                    sx={{ color: '#fff' }}>
+                                    {item}
+                                </Button>
+                            ))}
                     </Box>
                 </Toolbar>
             </AppBar>
@@ -101,7 +149,16 @@ export default function DrawerAppBar(props: Props) {
                     {drawer}
                 </Drawer>
             </Box>
-            <Main />
+            <Main
+                activities={activities}
+                selectedActivity={selectedActivity}
+                selectActivity={handleSelectActivity}
+                editMode={editMode}
+                openForm={handleFormOpen}
+                closeForm={handleFormClose}
+                createOrEditActivity={handleCreateOrEditActivity}
+                deleteActivity={handleDeleteActivity}
+                cancelSelectActivity={handleCancelSelectActivity} />
         </Box>
     );
 }
