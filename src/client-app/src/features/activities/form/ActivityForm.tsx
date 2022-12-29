@@ -5,6 +5,10 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Activity } from "../../../app/models/activity";
+import dayjs, { Dayjs } from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 interface Props {
     activity: Activity | undefined;
@@ -25,6 +29,7 @@ export default function ActivityForm({ activity: selectedActivity, closeForm,
         venue: ''
     };
 
+
     const [activity, setActivity] = useState(initialState);
 
     const handleSubmit = () => {
@@ -35,6 +40,10 @@ export default function ActivityForm({ activity: selectedActivity, closeForm,
         const { name, value } = event.target;
         setActivity({ ...activity, [name]: value });
     }
+
+    const [date, setDate] = React.useState<Dayjs | null>(
+        activity.date === '' ? dayjs(new Date()) : dayjs(activity.date)
+    );
 
     return (
         <Box
@@ -72,14 +81,35 @@ export default function ActivityForm({ activity: selectedActivity, closeForm,
                 id="category"
                 label="Category"
                 variant="outlined" />
-            <TextField
+            {/* <TextField
                 value={activity.date}
                 name='date'
+                type='date'
                 onChange={handleInputChange}
                 fullWidth
                 id="date"
                 label="Date"
-                variant="outlined" />
+                variant="outlined" /> */}
+            <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+            >
+                <DateTimePicker
+                    renderInput={(props) =>
+                        <TextField
+                            {...props}
+                            fullWidth
+                            name='date'
+                            id="date"
+                            variant="outlined"
+                            onChange={handleInputChange}
+                        />}
+                    label="Date"
+                    value={date}
+                    onChange={(newValue) => {
+                        setDate(newValue);
+                    }}
+                />
+            </LocalizationProvider>
             <TextField
                 value={activity.city}
                 name='city'
