@@ -15,6 +15,7 @@ import { v4 as uuid } from 'uuid';
 import { Activity } from '../models/activity';
 import agent from '../api/agent';
 import LoadingComponent from './LoadingComponent';
+import { useStore } from '../stores/store';
 
 interface Props {
     /**
@@ -33,6 +34,9 @@ export enum NavItems {
 };
 
 export default function DrawerAppBar(props: Props) {
+
+    const { activityStore } = useStore();
+
     const [activities, setActivities] = useState<Activity[]>([]);
     const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
     const [editMode, setEditMode] = useState(false);
