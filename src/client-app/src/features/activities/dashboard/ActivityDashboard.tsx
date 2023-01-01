@@ -17,6 +17,7 @@ interface Props {
     closeForm: () => void;
     createOrEditActivity: (activity: Activity) => void;
     deleteActivity: (id: string) => void;
+    submitting: boolean;
 }
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -30,7 +31,7 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function ActivityDashboard({ activities,
     selectedActivity, selectActivity, cancelSelectActivity,
     editMode, openForm, closeForm,
-    createOrEditActivity, deleteActivity }: Props) {
+    createOrEditActivity, deleteActivity, submitting }: Props) {
     return (
         <Grid container spacing={2}>
             <Grid item={true} xs={12} sm={6} md={8}>
@@ -38,6 +39,7 @@ export default function ActivityDashboard({ activities,
                     <ActivityList
                         activities={activities}
                         deleteActivity={deleteActivity}
+                        submitting={submitting}
                         selectActivity={selectActivity} />
                 </Item>
             </Grid>
@@ -51,6 +53,7 @@ export default function ActivityDashboard({ activities,
                     {editMode && <ActivityForm
                         createOrEdit={createOrEditActivity}
                         closeForm={closeForm}
+                        submitting={submitting}
                         activity={selectedActivity} />}
                 </Item>
             </Grid>

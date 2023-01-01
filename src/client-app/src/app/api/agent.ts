@@ -25,11 +25,15 @@ const request = {
     get: <T>(url: string) => axios.get<T>(url).then(responseBody),
     post: <T>(url: string, body: {}) => axios.post<T>(url, body).then(responseBody),
     put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
-    delete: <T>(url: string) => axios.delete<T>(url).then(responseBody)
+    delete: <T>(url: string) => axios.delete<T>(url).then(responseBody),
 }
 
 const Activities = {
-    list: () => request.get<Activity[]>('/activity')
+    list: () => request.get<Activity[]>('/activity'),
+    details: (id: string) => request.get<Activity>(`/activity/${id}`),
+    create: (activity: Activity) => request.post<void>('/activity', activity),
+    update: (activity: Activity) => request.put<void>(`/activity/${activity.id}`, activity),
+    delete: (id: string) => request.delete<void>(`/activity/${id}`),
 }
 
 const agent = {

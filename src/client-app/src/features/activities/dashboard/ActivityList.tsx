@@ -1,20 +1,30 @@
-import React from "react";
+import React, { SyntheticEvent, useState } from "react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { Activity } from "../../../app/models/activity";
 import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LoadingButton from "@mui/lab/LoadingButton";
 
 interface Props {
     activities: Activity[];
     selectActivity: (id: string) => void;
     deleteActivity: (id: string) => void;
+    submitting: boolean;
 }
 
-export default function ActivityList({ activities, selectActivity, deleteActivity }: Props) {
+export default function ActivityList({ activities, selectActivity, deleteActivity,
+    submitting }: Props) {
+
+    const [target, setTarget] = useState('');
+
+    const handleActivityDelete = (e: SyntheticEvent<HTMLButtonElement>, id: string) => {
+        setTarget(e.currentTarget.id);
+        deleteActivity(id);
+    }
+
     return (
         <List
             sx={{
@@ -32,22 +42,26 @@ export default function ActivityList({ activities, selectActivity, deleteActivit
                     alignItems="flex-start"
                     secondaryAction={
                         <>
-                            <IconButton
+                            <LoadingButton
                                 onClick={() => selectActivity(activity.id)}
-                                edge="end"
-                                size="small"
+                                sx={{ mx: 0.2 }}
                                 aria-label="view"
+                                color="info"
+                                variant="outlined"
                             >
-                                <RemoveRedEyeIcon />
-                            </IconButton>
-                            <IconButton
-                                onClick={() => deleteActivity(activity.id)}
-                                edge="end"
-                                size="small"
+                                {<RemoveRedEyeIcon />}
+                            </LoadingButton>
+                            <LoadingButton
+                                onClick={(e) => handleActivityDelete(e, activity.id)}
+                                loading={submitting && target === activity.id}
+                                id={activity.id}
+                                sx={{ mx: 0.2 }}
                                 aria-label="delete"
+                                color="warning"
+                                variant="outlined"
                             >
-                                <DeleteIcon />
-                            </IconButton>
+                                {<DeleteIcon />}
+                            </LoadingButton>
                         </>
                     }>
                     <ListItemText

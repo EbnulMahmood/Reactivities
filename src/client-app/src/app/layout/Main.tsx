@@ -14,11 +14,13 @@ interface Props {
     closeForm: () => void;
     createOrEditActivity: (activity: Activity) => void;
     deleteActivity: (id: string) => void;
+    submitting: boolean;
 }
 
 export default function Main({ activities, selectedActivity, selectActivity,
     cancelSelectActivity, editMode, openForm,
-    closeForm, createOrEditActivity, deleteActivity }: Props) {
+    closeForm, createOrEditActivity, deleteActivity,
+    submitting }: Props) {
     return (
         <Container sx={{ p: 3 }}>
             <Toolbar />
@@ -31,6 +33,7 @@ export default function Main({ activities, selectedActivity, selectActivity,
                 closeForm={closeForm}
                 createOrEditActivity={createOrEditActivity}
                 deleteActivity={deleteActivity}
+                submitting={submitting}
                 cancelSelectActivity={cancelSelectActivity} />
         </Container>
     );
