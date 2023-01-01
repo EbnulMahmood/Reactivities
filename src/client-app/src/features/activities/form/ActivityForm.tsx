@@ -81,15 +81,6 @@ export default function ActivityForm({ activity: selectedActivity, closeForm,
                 id="category"
                 label="Category"
                 variant="outlined" />
-            {/* <TextField
-                value={activity.date}
-                name='date'
-                type='date'
-                onChange={handleInputChange}
-                fullWidth
-                id="date"
-                label="Date"
-                variant="outlined" /> */}
             <LocalizationProvider
                 dateAdapter={AdapterDayjs}
             >

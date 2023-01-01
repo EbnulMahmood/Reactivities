@@ -14,6 +14,7 @@ import NavBar from './NavBar';
 import { v4 as uuid } from 'uuid';
 import { Activity } from '../models/activity';
 import agent from '../api/agent';
+import LoadingComponent from './LoadingComponent';
 
 interface Props {
     /**
@@ -35,6 +36,7 @@ export default function DrawerAppBar(props: Props) {
     const [activities, setActivities] = useState<Activity[]>([]);
     const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
     const [editMode, setEditMode] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         agent.Activities.list().then(response => {
@@ -44,6 +46,7 @@ export default function DrawerAppBar(props: Props) {
                 activities.push(activity);
             });
             setActivities(activities);
+            setLoading(true);
         })
     }, []);
 
@@ -101,6 +104,8 @@ export default function DrawerAppBar(props: Props) {
     );
 
     const container = window !== undefined ? () => window().document.body : undefined;
+
+    if (loading) return <LoadingComponent />
 
     return (
         <Box sx={{ display: 'flex' }}>
