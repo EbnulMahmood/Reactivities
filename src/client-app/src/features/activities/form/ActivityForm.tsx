@@ -4,21 +4,17 @@ import TextField from "@mui/material/TextField";
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Activity } from "../../../app/models/activity";
 import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { useStore } from "../../../app/stores/store";
+import { observer } from "mobx-react-lite";
 
-interface Props {
-    activity: Activity | undefined;
-    closeForm: () => void;
-    createOrEdit: (activity: Activity) => void;
-    submitting: boolean;
-}
+export default observer(function ActivityForm() {
 
-export default function ActivityForm({ activity: selectedActivity, closeForm,
-    createOrEdit, submitting }: Props) {
+    const { activityStore: { selectedActivity, closeForm, loading,
+        createActivity, updateActivity } } = useStore();
 
     const initialState = selectedActivity ?? {
         id: '',
@@ -34,7 +30,7 @@ export default function ActivityForm({ activity: selectedActivity, closeForm,
     const [activity, setActivity] = useState(initialState);
 
     const handleSubmit = () => {
-        createOrEdit(activity);
+        activity.id ? updateActivity(activity) : createActivity(activity);
     }
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -130,7 +126,7 @@ export default function ActivityForm({ activity: selectedActivity, closeForm,
                     Cancel
                 </LoadingButton>
                 <LoadingButton
-                    loading={submitting}
+                    loading={loading}
                     size="small"
                     color="success"
                     loadingPosition="start"
@@ -142,4 +138,4 @@ export default function ActivityForm({ activity: selectedActivity, closeForm,
             </Box>
         </Box>
     );
-}
+});

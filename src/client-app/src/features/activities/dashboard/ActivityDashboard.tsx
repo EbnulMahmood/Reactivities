@@ -2,23 +2,13 @@ import React from "react";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
-import { Activity } from "../../../app/models/activity";
 import ActivityList from "./ActivityList";
 import ActivityDetails from "../details/ActivityDetails";
 import ActivityForm from "../form/ActivityForm";
-
-interface Props {
-    activities: Activity[];
-    selectedActivity: Activity | undefined;
-    selectActivity: (id: string) => void;
-    cancelSelectActivity: () => void;
-    editMode: boolean;
-    openForm: (id: string) => void;
-    closeForm: () => void;
-    createOrEditActivity: (activity: Activity) => void;
-    deleteActivity: (id: string) => void;
-    submitting: boolean;
-}
+import Container from "@mui/material/Container";
+import Toolbar from "@mui/material/Toolbar";
+import { useStore } from "../../../app/stores/store";
+import { observer } from "mobx-react-lite";
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -28,35 +18,27 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function ActivityDashboard({ activities,
-    selectedActivity, selectActivity, cancelSelectActivity,
-    editMode, openForm, closeForm,
-    createOrEditActivity, deleteActivity, submitting }: Props) {
+export default observer(function ActivityDashboard() {
+
+    const { activityStore: { selectedActivity, editMode } } = useStore();
+
     return (
-        <Grid container spacing={2}>
-            <Grid item={true} xs={12} sm={6} md={8}>
-                <Item>
-                    <ActivityList
-                        activities={activities}
-                        deleteActivity={deleteActivity}
-                        submitting={submitting}
-                        selectActivity={selectActivity} />
-                </Item>
+        <Container sx={{ p: 3 }}>
+            <Toolbar />
+            <Grid container spacing={2}>
+                <Grid item={true} xs={12} sm={6} md={8}>
+                    <Item>
+                        <ActivityList />
+                    </Item>
+                </Grid>
+                <Grid item={true} xs={12} sm={6} md={4}>
+                    <Item>
+                        {selectedActivity && !editMode &&
+                            <ActivityDetails />}
+                        {editMode && <ActivityForm />}
+                    </Item>
+                </Grid>
             </Grid>
-            <Grid item={true} xs={12} sm={6} md={4}>
-                <Item>
-                    {selectedActivity && !editMode &&
-                        <ActivityDetails
-                            openForm={openForm}
-                            activity={selectedActivity}
-                            cancelSelectActivity={cancelSelectActivity} />}
-                    {editMode && <ActivityForm
-                        createOrEdit={createOrEditActivity}
-                        closeForm={closeForm}
-                        submitting={submitting}
-                        activity={selectedActivity} />}
-                </Item>
-            </Grid>
-        </Grid>
+        </Container>
     );
-}
+});

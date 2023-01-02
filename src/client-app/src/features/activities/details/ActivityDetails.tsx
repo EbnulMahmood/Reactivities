@@ -15,13 +15,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Collapse from "@mui/material/Collapse";
-import { Activity } from "../../../app/models/activity";
-
-interface Props {
-    activity: Activity;
-    cancelSelectActivity: () => void;
-    openForm: (id: string) => void;
-}
+import { useStore } from "../../../app/stores/store";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 
 interface ExpandMoreProps extends IconButtonProps {
     expand: boolean;
@@ -38,12 +33,17 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
     }),
 }));
 
-export default function ActivityDetails({ activity, cancelSelectActivity, openForm }: Props) {
+export default function ActivityDetails() {
+
+    const { activityStore: { selectedActivity: activity, openForm, cancelSelectedActivity } } = useStore();
+
     const [expanded, setExpanded] = React.useState(false);
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
+
+    if (!activity) return <LoadingComponent />;
 
     return (
         <Card>
@@ -77,7 +77,7 @@ export default function ActivityDetails({ activity, cancelSelectActivity, openFo
             <CardActions disableSpacing>
                 <IconButton
                     aria-label="cancel"
-                    onClick={cancelSelectActivity}
+                    onClick={cancelSelectedActivity}
                 >
                     <CancelIcon />
                 </IconButton>

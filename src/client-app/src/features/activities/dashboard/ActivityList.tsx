@@ -2,21 +2,16 @@ import React, { SyntheticEvent, useState } from "react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { Activity } from "../../../app/models/activity";
 import Typography from "@mui/material/Typography";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LoadingButton from "@mui/lab/LoadingButton";
+import { useStore } from "../../../app/stores/store";
+import { observer } from "mobx-react-lite";
 
-interface Props {
-    activities: Activity[];
-    selectActivity: (id: string) => void;
-    deleteActivity: (id: string) => void;
-    submitting: boolean;
-}
+export default observer(function ActivityList() {
 
-export default function ActivityList({ activities, selectActivity, deleteActivity,
-    submitting }: Props) {
+    const { activityStore: { activitiesByDate, selectActivity, deleteActivity, loading } } = useStore();
 
     const [target, setTarget] = useState('');
 
@@ -35,10 +30,10 @@ export default function ActivityList({ activities, selectActivity, deleteActivit
                 '& ul': { padding: 0 },
             }}
         >
-            {activities.map(activity => (
+            {activitiesByDate.map((activity, index) => (
                 <ListItem
                     divider={true}
-                    key={activity.id}
+                    key={index + activity.id + activity.title}
                     alignItems="flex-start"
                     secondaryAction={
                         <>
@@ -53,7 +48,7 @@ export default function ActivityList({ activities, selectActivity, deleteActivit
                             </LoadingButton>
                             <LoadingButton
                                 onClick={(e) => handleActivityDelete(e, activity.id)}
-                                loading={submitting && target === activity.id}
+                                loading={loading && target === activity.id}
                                 id={activity.id}
                                 sx={{ mx: 0.2 }}
                                 aria-label="delete"
@@ -96,4 +91,4 @@ export default function ActivityList({ activities, selectActivity, deleteActivit
             ))}
         </List>
     );
-}
+});

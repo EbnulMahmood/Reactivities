@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -9,13 +9,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import Main from './Main';
 import NavBar from './NavBar';
-import { v4 as uuid } from 'uuid';
-import { Activity } from '../models/activity';
-import agent from '../api/agent';
 import LoadingComponent from './LoadingComponent';
 import { useStore } from '../stores/store';
+import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
+import { observer } from 'mobx-react-lite';
 
 interface Props {
     /**
@@ -33,79 +31,21 @@ export enum NavItems {
     Create
 };
 
-export default function DrawerAppBar(props: Props) {
+export default observer(function DrawerAppBar(props: Props) {
 
-    const { activityStore } = useStore();
-
-    const [activities, setActivities] = useState<Activity[]>([]);
-    const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
-    const [editMode, setEditMode] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [submitting, setSubmitting] = useState(false);
+    const { activityStore: { openForm, loadActivities,
+        loadingInitial } } = useStore();
 
     useEffect(() => {
-        agent.Activities.list().then(response => {
-            let activities: Activity[] = [];
-            response.forEach(activity => {
-                activity.date = activity.date.split('T')[0];
-                activities.push(activity);
-            });
-            setActivities(activities);
-            setLoading(false);
-        })
-    }, []);
-
-    const handleSelectActivity = (id: string) => {
-        setSelectedActivity(activities.find(x => x.id === id));
-    };
-
-    const handleCancelSelectActivity = () => {
-        setSelectedActivity(undefined);
-    };
-
-    const handleFormOpen = (id?: string) => {
-        id ? handleSelectActivity(id) : handleCancelSelectActivity();
-        setEditMode(true);
-    };
-
-    const handleFormClose = () => {
-        setEditMode(false);
-    };
+        loadActivities();
+    }, [loadActivities]);
 
     const viewForm = (item: string) => {
         const create = NavItems[NavItems.Create];
         if (item === create) {
-            handleFormOpen();
+            openForm();
         }
     };
-
-    const handleCreateOrEditActivity = (activity: Activity) => {
-        setSubmitting(true);
-        if (activity.id) {
-            agent.Activities.update(activity).then(() => {
-                setActivities([...activities.filter(x => x.id !== activity.id), activity]);
-                setSelectedActivity(activity);
-                setEditMode(false);
-                setSubmitting(false);
-            })
-        } else {
-            activity.id = uuid();
-            agent.Activities.create(activity).then(() => {
-                setActivities([...activities, activity]);
-                setSelectedActivity(activity);
-                setEditMode(false);
-                setSubmitting(false);
-            })
-        }
-    }
-
-    const handleDeleteActivity = (id: string) => {
-        setSubmitting(true);
-        agent.Activities.delete(id).then(() => {
-            setActivities([...activities.filter(x => x.id !== id)]);
-            setSubmitting(false);
-        })
-    }
 
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -126,7 +66,7 @@ export default function DrawerAppBar(props: Props) {
 
     const container = window !== undefined ? () => window().document.body : undefined;
 
-    if (loading) return <LoadingComponent />
+    if (loadingInitial) return <LoadingComponent />
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -180,17 +120,7 @@ export default function DrawerAppBar(props: Props) {
                     {drawer}
                 </Drawer>
             </Box>
-            <Main
-                activities={activities}
-                selectedActivity={selectedActivity}
-                selectActivity={handleSelectActivity}
-                editMode={editMode}
-                openForm={handleFormOpen}
-                closeForm={handleFormClose}
-                createOrEditActivity={handleCreateOrEditActivity}
-                deleteActivity={handleDeleteActivity}
-                submitting={submitting}
-                cancelSelectActivity={handleCancelSelectActivity} />
+            <ActivityDashboard />
         </Box>
     );
-}
+});
