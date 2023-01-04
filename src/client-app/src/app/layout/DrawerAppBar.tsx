@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,10 +10,13 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import NavBar from './NavBar';
-import LoadingComponent from './LoadingComponent';
 import { useStore } from '../stores/store';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 import { observer } from 'mobx-react-lite';
+import { Route, Routes } from 'react-router-dom';
+import HomePage from '../../features/home/HomePage';
+import ActivityForm from '../../features/activities/form/ActivityForm';
+import Container from '@mui/material/Container';
 
 interface Props {
     /**
@@ -33,12 +36,7 @@ export enum NavItems {
 
 export default observer(function DrawerAppBar(props: Props) {
 
-    const { activityStore: { openForm, loadActivities,
-        loadingInitial } } = useStore();
-
-    useEffect(() => {
-        loadActivities();
-    }, [loadActivities]);
+    const { activityStore: { openForm } } = useStore();
 
     const viewForm = (item: string) => {
         const create = NavItems[NavItems.Create];
@@ -65,8 +63,6 @@ export default observer(function DrawerAppBar(props: Props) {
     );
 
     const container = window !== undefined ? () => window().document.body : undefined;
-
-    if (loadingInitial) return <LoadingComponent />
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -120,7 +116,22 @@ export default observer(function DrawerAppBar(props: Props) {
                     {drawer}
                 </Drawer>
             </Box>
-            <ActivityDashboard />
+            <Routes>
+                <Route path='/' element={<HomePage />} />
+                <Route path='*' element={
+                    <Routes>
+                        <Route path='/activities' element={<ActivityDashboard />} />
+                        <Route path='/createActivity' element={
+                            <Container sx={{
+                                marginTop: '7rem',
+                                width: '30rem'
+                            }}>
+                                <ActivityForm />
+                            </Container>
+                        } />
+                    </Routes>
+                } />
+            </Routes>
         </Box>
     );
 });

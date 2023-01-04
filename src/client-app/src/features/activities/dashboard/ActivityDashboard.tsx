@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
@@ -9,6 +9,7 @@ import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
 import { useStore } from "../../../app/stores/store";
 import { observer } from "mobx-react-lite";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -20,7 +21,14 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default observer(function ActivityDashboard() {
 
-    const { activityStore: { selectedActivity, editMode } } = useStore();
+    const { activityStore: { selectedActivity, editMode, loadingInitial,
+        loadActivities } } = useStore();
+
+    useEffect(() => {
+        loadActivities();
+    }, [loadActivities]);
+
+    if (loadingInitial) return <LoadingComponent />
 
     return (
         <Container sx={{ p: 3 }}>
