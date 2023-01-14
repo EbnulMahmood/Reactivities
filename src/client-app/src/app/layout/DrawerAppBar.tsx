@@ -8,7 +8,6 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import NavBar from './NavBar';
 import { useStore } from '../stores/store';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
@@ -17,6 +16,7 @@ import { Route, Routes } from 'react-router-dom';
 import HomePage from '../../features/home/HomePage';
 import ActivityForm from '../../features/activities/form/ActivityForm';
 import Container from '@mui/material/Container';
+import { Link } from 'react-router-dom';
 
 interface Props {
     /**
@@ -30,20 +30,27 @@ const drawerWidth = 240;
 
 export enum NavItems {
     Home,
+    Activities,
+    Create,
     About,
-    Create
 };
 
 export default observer(function DrawerAppBar(props: Props) {
 
     const { activityStore: { openForm } } = useStore();
 
-    const viewForm = (item: string) => {
-        const create = NavItems[NavItems.Create];
-        if (item === create) {
-            openForm();
+    const GetLink = (item: string) => {
+        if (item.toLowerCase() === 'home') {
+            return '/';
+        } else if (item.toLowerCase() === 'activities') {
+            return '/activities';
+        } else if (item.toLowerCase() === 'create') {
+            return '/createActivity';
+        } else if (item.toLowerCase() === 'about') {
+            return '/about';
         }
-    };
+        return '/notFound';
+    }
 
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -55,10 +62,17 @@ export default observer(function DrawerAppBar(props: Props) {
     const drawer = (
         <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
             <Typography variant="h6" sx={{ my: 2 }}>
-                Reactivities
+                <Link
+                    to='/'
+                    style={{
+                        textDecoration: 'none',
+                        color: 'black'
+                    }}>
+                    Reactivities
+                </Link>
             </Typography>
             <Divider />
-            <NavBar navItems={NavItems} viewForm={viewForm} />
+            <NavBar navItems={NavItems} getLink={GetLink} />
         </Box>
     );
 
@@ -78,23 +92,38 @@ export default observer(function DrawerAppBar(props: Props) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography
-                        variant="h6"
-                        component="div"
+                    <Box
                         sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
                     >
-                        Reactivities
-                    </Typography>
+                        <Typography
+                            variant="h6"
+                            component="div"
+                        >
+                            <Link
+                                to='/'
+                                style={{
+                                    textDecoration: 'none',
+                                    color: 'white'
+                                }}
+                            >
+                                Reactivities
+                            </Link>
+                        </Typography>
+                    </Box>
                     <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                         {Object.keys(NavItems)
                             .filter((v) => isNaN(Number(v)))
                             .map((item) => (
-                                <Button
-                                    onClick={() => viewForm(item)}
+                                <Link
+                                    to={GetLink(item)}
                                     key={item}
-                                    sx={{ color: '#fff' }}>
+                                    style={{
+                                        textDecoration: 'none',
+                                        color: '#fff',
+                                        margin: '0.5rem'
+                                    }}>
                                     {item}
-                                </Button>
+                                </Link>
                             ))}
                     </Box>
                 </Toolbar>
@@ -132,6 +161,6 @@ export default observer(function DrawerAppBar(props: Props) {
                     </Routes>
                 } />
             </Routes>
-        </Box>
+        </Box >
     );
 });
