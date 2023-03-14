@@ -8,10 +8,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useStore } from "../../../app/stores/store";
 import { observer } from "mobx-react-lite";
+import { Link } from "react-router-dom";
 
 export default observer(function ActivityList() {
 
-    const { activityStore: { activitiesByDate, selectActivity, deleteActivity, loading } } = useStore();
+    const { activityStore: { activitiesByDate, deleteActivity, loading } } = useStore();
 
     const [target, setTarget] = useState('');
 
@@ -37,8 +38,9 @@ export default observer(function ActivityList() {
                     alignItems="flex-start"
                     secondaryAction={
                         <>
+                        <Link to={`/activities/${activity.id}`}>
+                            
                             <LoadingButton
-                                onClick={() => selectActivity(activity.id)}
                                 sx={{ mx: 0.2 }}
                                 aria-label="view"
                                 color="info"
@@ -46,6 +48,7 @@ export default observer(function ActivityList() {
                             >
                                 {<RemoveRedEyeIcon />}
                             </LoadingButton>
+                        </Link>
                             <LoadingButton
                                 onClick={(e) => handleActivityDelete(e, activity.id)}
                                 loading={loading && target === activity.id}

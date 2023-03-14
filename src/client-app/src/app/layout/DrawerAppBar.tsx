@@ -9,7 +9,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import NavBar from './NavBar';
-import { useStore } from '../stores/store';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 import { observer } from 'mobx-react-lite';
 import { Route, Routes } from 'react-router-dom';
@@ -17,6 +16,7 @@ import HomePage from '../../features/home/HomePage';
 import ActivityForm from '../../features/activities/form/ActivityForm';
 import Container from '@mui/material/Container';
 import { Link } from 'react-router-dom';
+import ActivityDetails from '../../features/activities/details/ActivityDetails';
 
 interface Props {
     /**
@@ -36,8 +36,6 @@ export enum NavItems {
 };
 
 export default observer(function DrawerAppBar(props: Props) {
-
-    const { activityStore: { openForm } } = useStore();
 
     const GetLink = (item: string) => {
         if (item.toLowerCase() === 'home') {
@@ -150,6 +148,7 @@ export default observer(function DrawerAppBar(props: Props) {
                 <Route path='*' element={
                     <Routes>
                         <Route path='/activities' element={<ActivityDashboard />} />
+                        <Route path='/activities/:id' element={<ActivityDetails />} />
                         <Route path='/createActivity' element={
                             <Container sx={{
                                 marginTop: '7rem',

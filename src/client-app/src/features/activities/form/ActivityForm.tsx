@@ -13,7 +13,7 @@ import { observer } from "mobx-react-lite";
 
 export default observer(function ActivityForm() {
 
-    const { activityStore: { selectedActivity, closeForm, loading,
+    const { activityStore: { selectedActivity, loading,
         createActivity, updateActivity } } = useStore();
 
     const initialState = selectedActivity ?? {
@@ -116,7 +116,6 @@ export default observer(function ActivityForm() {
                 variant="outlined" />
             <Box display="flex" justifyContent="space-between">
                 <LoadingButton
-                    onClick={closeForm}
                     size="small"
                     color="warning"
                     loadingPosition="start"
