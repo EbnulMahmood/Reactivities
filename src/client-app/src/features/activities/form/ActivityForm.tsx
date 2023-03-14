@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import SaveIcon from '@mui/icons-material/Save';
@@ -10,13 +10,15 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { useStore } from "../../../app/stores/store";
 import { observer } from "mobx-react-lite";
+import { useParams } from "react-router-dom";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 
 export default observer(function ActivityForm() {
 
-    const { activityStore: { selectedActivity, loading,
-        createActivity, updateActivity } } = useStore();
+    const { activityStore: { loading, createActivity, updateActivity, loadActivity, loadingInitial } } = useStore();
+    const {id} = useParams<{id: string}>();
 
-    const initialState = selectedActivity ?? {
+    const [activity, setActivity] = useState({
         id: '',
         title: '',
         category: '',
@@ -24,10 +26,11 @@ export default observer(function ActivityForm() {
         date: '',
         city: '',
         venue: ''
-    };
+    });
 
-
-    const [activity, setActivity] = useState(initialState);
+    useEffect(() => {
+        if (id) loadActivity(id).then(activity => setActivity(activity!));
+    }, [id, loadActivity])
 
     const handleSubmit = () => {
         activity.id ? updateActivity(activity) : createActivity(activity);
@@ -41,6 +44,8 @@ export default observer(function ActivityForm() {
     const [date, setDate] = React.useState<Dayjs | null>(
         activity.date === '' ? dayjs(new Date()) : dayjs(activity.date)
     );
+
+    if (loadingInitial) return <LoadingComponent />
 
     return (
         <Box

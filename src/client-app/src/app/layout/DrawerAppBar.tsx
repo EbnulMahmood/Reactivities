@@ -157,6 +157,14 @@ export default observer(function DrawerAppBar(props: Props) {
                                 <ActivityForm />
                             </Container>
                         } />
+                        <Route path='/manage/:id' element={
+                            <Container sx={{
+                                marginTop: '7rem',
+                                width: '30rem'
+                            }}>
+                                <ActivityForm />
+                            </Container>
+                        } />
                     </Routes>
                 } />
             </Routes>

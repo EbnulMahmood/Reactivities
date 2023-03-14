@@ -23,6 +23,7 @@ import Paper from "@mui/material/Paper";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Toolbar from "@mui/material/Toolbar";
+import { Link } from "react-router-dom";
 
 interface ExpandMoreProps extends IconButtonProps {
     expand: boolean;
@@ -99,15 +100,19 @@ export default observer(function ActivityDetails() {
                                 </Typography>
                             </CardContent>
                             <CardActions disableSpacing>
-                                <IconButton
-                                    aria-label="cancel"
-                                >
-                                    <CancelIcon />
-                                </IconButton>
-                                <IconButton
-                                    aria-label="edit">
-                                    <EditIcon />
-                                </IconButton>
+                                <Link to='/activities'>
+                                    <IconButton
+                                        aria-label="cancel"
+                                    >
+                                        <CancelIcon />
+                                    </IconButton>
+                                </Link>
+                                <Link to={`/manage/${activity.id}`}>
+                                    <IconButton
+                                        aria-label="edit">
+                                        <EditIcon />
+                                    </IconButton>
+                                </Link>
                                 <IconButton aria-label="share">
                                     <ShareIcon />
                                 </IconButton>
